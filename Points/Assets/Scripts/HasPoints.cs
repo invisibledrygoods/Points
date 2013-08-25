@@ -69,7 +69,7 @@ public class HasPoints : MonoBehaviour
         points.Add(new Point(type, amount));
     }
 
-    internal void SetModifier(string type, string source, float modifier)
+    public void SetModifier(string type, string source, float modifier)
     {
         foreach (Point point in points)
         {
@@ -92,7 +92,7 @@ public class HasPoints : MonoBehaviour
         throw new KeyNotFoundException(name + " does not have any " + type);
     }
 
-    internal void Deal(string source, float amount)
+    public void Deal(string source, float amount)
     {
         foreach (Point point in points)
         {
@@ -122,7 +122,7 @@ public class HasPoints : MonoBehaviour
         }
     }
 
-    internal float Get(string type)
+    public float Get(string type)
     {
         foreach (Point point in points)
         {
@@ -135,13 +135,27 @@ public class HasPoints : MonoBehaviour
         throw new KeyNotFoundException(name + " does not have any " + type);
     }
 
-    internal void SetMax(string type, float amount)
+    public void SetMax(string type, float amount)
     {
         foreach (Point point in points)
         {
             if (point.type == type)
             {
                 point.max = amount;
+                return;
+            }
+        }
+
+        throw new KeyNotFoundException(name + " does not have any " + type);
+    }
+
+    public void SetBlock(string type, string source, string toType)
+    {
+        foreach (Point point in points)
+        {
+            if (point.type == type)
+            {
+                point.blocks.Add(new Block(source, toType));
                 return;
             }
         }

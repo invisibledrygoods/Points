@@ -43,7 +43,7 @@ public class HasPointsTest : TestBehaviour
             .And("the 'shield' blocks 'damage' to 'hp'")
             .And("it receives -1 'hp' from 'damage'")
             .When("it receives 5 points of 'damage'")
-            .Then("it should have 5 'hp'");
+            .Then("it should have 0 'hp'");
     }
 
     public void ItHas____(float amount, string type)
@@ -70,5 +70,10 @@ public class HasPointsTest : TestBehaviour
     public void ItHasAMax__Of__(string type, float amount)
     {
         it.SetMax(type, amount);
+    }
+
+    public void The__Blocks__To__(string type, string source, string toType)
+    {
+        it.SetBlock(type, source, toType);
     }
 }
