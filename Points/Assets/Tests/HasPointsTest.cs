@@ -45,4 +45,22 @@ public class HasPointsTest : TestBehaviour
             .When("it receives 5 points of 'damage'")
             .Then("it should have 5 'hp'");
     }
+
+    public void ItHas____(int value, string type)
+    {
+        it = transform.Require<HasPoints>();
+        it.Set(type, value);
+    }
+
+//    public void ItReceives____From__(int value, string type, string source)
+//    {
+//    }
+
+//    public void ItReceives__PointsOf__(int value, string type)
+//    {
+//    }
+
+//    public void ItShouldHave____(int value, string type)
+//    {
+//    }
 }
