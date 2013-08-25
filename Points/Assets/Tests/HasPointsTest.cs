@@ -57,9 +57,10 @@ public class HasPointsTest : TestBehaviour
         it.SetModifier(type, source, modifier);
     }
 
-//    public void ItReceives__PointsOf__(int value, string type)
-//    {
-//    }
+    public void ItReceives__PointsOf__(float amount, string type)
+    {
+        it.Deal(type, amount);
+    }
 
 //    public void ItShouldHave____(int value, string type)
 //    {

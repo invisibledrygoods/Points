@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using Require;
+using System.Linq;
 
 [Serializable]
 public class Modifier
@@ -31,6 +32,7 @@ public class Point
         this.type = type;
         this.amount = amount;
         this.modifiers = new List<Modifier>();
+        this.blocks = new List<Block>();
     }
 }
 
@@ -87,5 +89,29 @@ public class HasPoints : MonoBehaviour
             }
         }
         throw new KeyNotFoundException(name + " does not have any " + type);
+    }
+
+    internal void Deal(string source, float amount)
+    {
+        foreach (Point point in points)
+        {
+            foreach (Modifier mod in point.modifiers.Where(i => i.source == source))
+            {
+                foreach (Block block in points.Where(i => i.amount > 0).SelectMany(i => i.blocks))
+                {
+                    if (block.source == source && block.to == point.type)
+                    {
+                        return;
+                    }
+                }
+
+                point.amount = Mathf.Clamp(point.amount + mod.modifier * amount, 0, point.max);
+
+                if (mod.effect)
+                {
+                    Instantiate(mod.effect, transform.position, Quaternion.identity);
+                }
+            }
+        }
     }
 }
