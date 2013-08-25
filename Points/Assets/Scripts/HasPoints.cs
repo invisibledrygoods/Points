@@ -134,4 +134,18 @@ public class HasPoints : MonoBehaviour
 
         throw new KeyNotFoundException(name + " does not have any " + type);
     }
+
+    internal void SetMax(string type, float amount)
+    {
+        foreach (Point point in points)
+        {
+            if (point.type == type)
+            {
+                point.max = amount;
+                return;
+            }
+        }
+
+        throw new KeyNotFoundException(name + " does not have any " + type);
+    }
 }

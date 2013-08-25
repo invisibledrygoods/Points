@@ -32,14 +32,14 @@ public class HasPointsTest : TestBehaviour
             .Then("it should have 9 'hp'");
 
         Given("it has 5 'hp'")
-            .And("it has a 2 'shield'")
+            .And("it has 2 'shield'")
             .And("the 'shield' blocks 'damage' to 'hp'")
             .And("it receives -1 'hp' from 'damage'")
             .When("it receives 5 points of 'damage'")
             .Then("it should have 5 'hp'");
 
         Given("it has 5 'hp'")
-            .And("it has a 0 'shield'")
+            .And("it has 0 'shield'")
             .And("the 'shield' blocks 'damage' to 'hp'")
             .And("it receives -1 'hp' from 'damage'")
             .When("it receives 5 points of 'damage'")
@@ -65,5 +65,10 @@ public class HasPointsTest : TestBehaviour
     public void ItShouldHave____(float amount, string type)
     {
         it.Get(type).ShouldBe(amount);
+    }
+
+    public void ItHasAMax__Of__(string type, float amount)
+    {
+        it.SetMax(type, amount);
     }
 }
