@@ -88,6 +88,7 @@ public class HasPoints : MonoBehaviour
                 return;
             }
         }
+
         throw new KeyNotFoundException(name + " does not have any " + type);
     }
 
@@ -105,7 +106,13 @@ public class HasPoints : MonoBehaviour
                     }
                 }
 
-                point.amount = Mathf.Clamp(point.amount + mod.modifier * amount, 0, point.max);
+                float max = point.max;
+                if (max == 0)
+                {
+                    max = float.MaxValue;
+                }
+
+                point.amount = Mathf.Clamp(point.amount + mod.modifier * amount, 0, max);
 
                 if (mod.effect)
                 {
@@ -113,5 +120,18 @@ public class HasPoints : MonoBehaviour
                 }
             }
         }
+    }
+
+    internal float Get(string type)
+    {
+        foreach (Point point in points)
+        {
+            if (point.type == type)
+            {
+                return point.amount;
+            }
+        }
+
+        throw new KeyNotFoundException(name + " does not have any " + type);
     }
 }

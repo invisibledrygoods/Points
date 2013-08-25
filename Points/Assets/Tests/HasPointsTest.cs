@@ -62,7 +62,8 @@ public class HasPointsTest : TestBehaviour
         it.Deal(type, amount);
     }
 
-//    public void ItShouldHave____(int value, string type)
-//    {
-//    }
+    public void ItShouldHave____(float amount, string type)
+    {
+        it.Get(type).ShouldBe(amount);
+    }
 }
