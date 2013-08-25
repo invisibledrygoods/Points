@@ -46,15 +46,16 @@ public class HasPointsTest : TestBehaviour
             .Then("it should have 5 'hp'");
     }
 
-    public void ItHas____(int value, string type)
+    public void ItHas____(float amount, string type)
     {
         it = transform.Require<HasPoints>();
-        it.Set(type, value);
+        it.Set(type, amount);
     }
 
-//    public void ItReceives____From__(int value, string type, string source)
-//    {
-//    }
+    public void ItReceives____From__(float modifier, string type, string source)
+    {
+        it.SetModifier(type, source, modifier);
+    }
 
 //    public void ItReceives__PointsOf__(int value, string type)
 //    {
