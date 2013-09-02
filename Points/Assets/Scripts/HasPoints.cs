@@ -51,12 +51,10 @@ public class Block
 
 public class HasPoints : MonoBehaviour
 {
-    public List<Point> points;
+    public List<Point> points = new List<Point>();
 
     public void Set(string type, float amount)
     {
-        points = points ?? new List<Point>();
-
         foreach (Point point in points)
         {
             if (point.type == type)
@@ -94,18 +92,10 @@ public class HasPoints : MonoBehaviour
 
     public void Deal(string source, float amount)
     {
-        foreach (Point point in points)
+        foreach (Point point in PointsThatCanReceive(source))
         {
             foreach (Modifier mod in point.modifiers.Where(i => i.source == source))
             {
-                foreach (Block block in points.Where(i => i.amount > 0).SelectMany(i => i.blocks))
-                {
-                    if (block.source == source && block.to == point.type)
-                    {
-                        return;
-                    }
-                }
-
                 float max = point.max;
                 if (max == 0)
                 {
@@ -117,6 +107,48 @@ public class HasPoints : MonoBehaviour
                 if (mod.effect)
                 {
                     Instantiate(mod.effect, transform.position, Quaternion.identity);
+                }
+            }
+        }
+    }
+
+    public bool Has(string type)
+    {
+        foreach (Point point in points)
+        {
+            if (point.type == type)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool CanReceive(string source)
+    {
+        return PointsThatCanReceive(source).Count() > 0;
+    }
+
+    public IEnumerable<Point> PointsThatCanReceive(string source)
+    {
+        foreach (Point point in points)
+        {
+            foreach (Modifier mod in point.modifiers.Where(i => i.source == source))
+            {
+                bool blocked = false;
+
+                foreach (Block block in points.Where(i => i.amount > 0).SelectMany(i => i.blocks))
+                {
+                    if (block.source == source && block.to == point.type)
+                    {
+                        blocked = true;
+                    }
+                }
+
+                if (!blocked)
+                {
+                    yield return point;
                 }
             }
         }
