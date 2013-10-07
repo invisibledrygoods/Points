@@ -13,7 +13,8 @@ public class ReceivesPointsInCollisionTest : TestBehaviour
             .And("it has 5 hp")
             .And("a butthead who takes damage is nearby")
             .When("it collides with the butthead")
-            .ThenWithin("3 frames", "it should have 8 hp");
+            .ThenWithin("3 frames", "it should have 8 hp")
+            .Because("it should receive points in collisions");
     }
 
     public void ItReceives____InCollisionsWithThingsThatTake__(float amount, string source, string ifColliderCanReceive)

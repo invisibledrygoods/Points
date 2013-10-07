@@ -13,37 +13,43 @@ public class HasPointsTest : TestBehaviour
         Given("it has 5 'hp'")
             .And("it receives -1 'hp' from 'damage'")
             .When("it receives 3 points of 'damage'")
-            .Then("it should have 2 'hp'");
+            .Then("it should have 2 'hp'")
+            .Because("it should lose points when a negative modifier is applied");
 
         Given("it has 5 'hp'")
             .And("it receives -2 'hp' from 'damage'")
             .When("it receives 2 points of 'damage'")
-            .Then("it should have 1 'hp'");
+            .Then("it should have 1 'hp'")
+            .Because("it should lose double points when a double modifier is applied");
 
         Given("it has 5 'hp'")
             .And("it receives -1 'hp' from 'damage'")
             .When("it receives 8 points of 'damage'")
-            .Then("it should have 0 'hp'");
+            .Then("it should have 0 'hp'")
+            .Because("it should not lose more points than it has");
 
         Given("it has 5 'hp'")
             .And("it has a max 'hp' of 9")
             .And("it receives 1 'hp' from 'healing'")
             .When("it receives 5 points of 'healing'")
-            .Then("it should have 9 'hp'");
+            .Then("it should have 9 'hp'")
+            .Because("it should not go over its max points");
 
         Given("it has 5 'hp'")
             .And("it has 2 'shield'")
             .And("the 'shield' blocks 'damage' to 'hp'")
             .And("it receives -1 'hp' from 'damage'")
             .When("it receives 5 points of 'damage'")
-            .Then("it should have 5 'hp'");
+            .Then("it should have 5 'hp'")
+            .Because("it should not lose points when another point is blocking them");
 
         Given("it has 5 'hp'")
             .And("it has 0 'shield'")
             .And("the 'shield' blocks 'damage' to 'hp'")
             .And("it receives -1 'hp' from 'damage'")
             .When("it receives 5 points of 'damage'")
-            .Then("it should have 0 'hp'");
+            .Then("it should have 0 'hp'")
+            .Because("it should lose points if the shield is depleted");
     }
 
     public void ItHas____(float amount, string type)
