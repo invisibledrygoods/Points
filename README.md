@@ -34,3 +34,10 @@ Buy a shield
 
     points.Set("shield", 10);
     points.SetBlock("shield", "damage", "hp");
+
+Future Refactoring
+==================
+
+Currently this is one monolithic class with a complicated properties panel.
+It should be broken up into multiple single purpose classes. i.e. ModifiesPoints,
+BlocksPoints, etc.
