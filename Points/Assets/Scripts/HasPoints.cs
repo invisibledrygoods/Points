@@ -24,6 +24,7 @@ public class Point
     public string type;
     public float amount;
     public float max;
+    public bool savable;
     public List<Modifier> modifiers;
     public List<Block> blocks;
 
@@ -49,7 +50,7 @@ public class Block
     }
 }
 
-public class HasPoints : MonoBehaviour
+public class HasPoints : SavesData
 {
     public List<Point> points = new List<Point>();
 
@@ -69,25 +70,18 @@ public class HasPoints : MonoBehaviour
 
     public void SetModifier(string type, string source, float modifier)
     {
-        foreach (Point point in points)
-        {
-            if (point.type == type)
-            {
-                foreach (Modifier mod in point.modifiers)
-                {
-                    if (mod.source == source)
-                    {
-                        mod.modifier = modifier;
-                        return;
-                    }
-                }
+        Point point = GetPoint(type);
 
-                point.modifiers.Add(new Modifier(source, modifier));
+        foreach (Modifier mod in GetPoint(type).modifiers)
+        {
+            if (mod.source == source)
+            {
+                mod.modifier = modifier;
                 return;
             }
         }
 
-        throw new KeyNotFoundException(name + " does not have any " + type);
+        point.modifiers.Add(new Modifier(source, modifier));
     }
 
     public void Deal(string source, float amount)
@@ -167,31 +161,94 @@ public class HasPoints : MonoBehaviour
         throw new KeyNotFoundException(name + " does not have any " + type);
     }
 
-    public void SetMax(string type, float amount)
+    public float GetMax(string type)
     {
         foreach (Point point in points)
         {
             if (point.type == type)
             {
-                point.max = amount;
-                return;
+                return point.max;
             }
         }
 
         throw new KeyNotFoundException(name + " does not have any " + type);
     }
 
-    public void SetBlock(string type, string source, string toType)
+    public Point GetPoint(string type)
     {
         foreach (Point point in points)
         {
             if (point.type == type)
             {
-                point.blocks.Add(new Block(source, toType));
-                return;
+                return point;
             }
         }
 
         throw new KeyNotFoundException(name + " does not have any " + type);
+    }
+
+    public void SetMax(string type, float amount)
+    {
+        GetPoint(type).max = amount;
+    }
+
+    public void SetBlock(string type, string source, string toType)
+    {
+        GetPoint(type).blocks.Add(new Block(source, toType));
+    }
+
+    public void SetSavable(string type, bool savable)
+    {
+        GetPoint(type).savable = savable;
+    }
+
+    public bool GetSavable(string type)
+    {
+        return GetPoint(type).savable;
+    }
+
+    public override string Serialize()
+    {
+        List<string> serialized = new List<string>();
+
+        foreach (Point point in points)
+        {
+            if (point.savable)
+            {
+                if (point.max == 0)
+                {
+                    serialized.Add(point.type + ":" + point.amount);
+                }
+                else
+                {
+                    serialized.Add(point.type + ":" + point.amount + "/" + point.max);
+                }
+            }
+        }
+
+        return string.Join(",", serialized.ToArray());
+    }
+
+    public override void Deserialize(string serialized)
+    {
+        if (serialized == "")
+        {
+            return;
+        }
+
+        foreach (string savedValue in serialized.Split(','))
+        {
+            string[] keyValuePair = savedValue.Split(":/".ToCharArray());
+
+            if (GetSavable(keyValuePair[0]))
+            {
+                Set(keyValuePair[0], float.Parse(keyValuePair[1]));
+
+                if (keyValuePair.Length == 3)
+                {
+                    SetMax(keyValuePair[0], float.Parse(keyValuePair[2]));
+                }
+            }
+        }
     }
 }
