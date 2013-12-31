@@ -1,12 +1,14 @@
 Points
 ======
 
-Mostly in-house points helper for Video Geimus
+Mostly in-house points and flags helper for Video Geimus
 
 Examples
 --------
 
     HasPoints points = transform.Require<HasPoints>();
+    HasFlags flags = transform.Require<HasFlags>();
+    points.fileSuffix = "MainCharacter";
 
 Get some hitpoints
 
@@ -34,6 +36,20 @@ Buy a shield
 
     points.Set("shield", 10);
     points.SetBlock("shield", "damage", "hp");
+
+Save your progress
+
+    points.Save("file1");
+    
+Blow in the cartredge
+
+    flags.Lower("CartridgeInserted");
+    flags.Raise("CartridgeClean");
+    flags.Raise("CartridgeInserted");
+    
+Load your game
+
+    points.Load("file1");
 
 Future Refactoring
 ==================
