@@ -41,7 +41,7 @@ Save your progress
 
     points.Save("file1");
     
-Blow in the cartredge
+Blow in the cartridge
 
     flags.Lower("CartridgeInserted");
     flags.Raise("CartridgeClean");
