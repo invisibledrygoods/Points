@@ -57,7 +57,7 @@ public class HasPoints : SavesData
         {
             if (receiver.source == source)
             {
-                successful = successful || receiver.Deal(amount);
+                successful = receiver.Deal(amount) || successful;
             }
         }
 

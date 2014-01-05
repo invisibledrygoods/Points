@@ -17,6 +17,22 @@ public class HasPointsTest : TestBehaviour
             .Because("it should lose points when a negative modifier is applied");
 
         Given("it has 5 'hp'")
+            .And("it has 5 'shield'")
+            .And("it receives -1 'hp' from 'damage'")
+            .And("it receives -1 'shield' from 'damage'")
+            .When("it receives 3 points of 'damage'")
+            .Then("it should have 2 'hp'")
+            .And("it should have 2 'shield'")
+            .Because("multiple points can be modified by a single source");
+
+        Given("it has 5 'hp'")
+            .And("it receives -1 'hp' from 'damage'")
+            .And("it receives -1 'hp' from 'damage'")
+            .When("it receives 2 points of 'damage'")
+            .Then("it should have 1 'hp'")
+            .Because("the same point can be modified multiple times by the same source if there are multiple modifiers");
+
+        Given("it has 5 'hp'")
             .And("it receives -2 'hp' from 'damage'")
             .When("it receives 2 points of 'damage'")
             .Then("it should have 1 'hp'")
@@ -58,7 +74,7 @@ public class HasPointsTest : TestBehaviour
 
     public void ItReceives____From__(float modifier, string type, string source)
     {
-        ReceivesPointsFromSource mod = it.transform.Require<ReceivesPointsFromSource>();
+        ReceivesPointsFromSource mod = it.gameObject.AddComponent<ReceivesPointsFromSource>();
         mod.type = type;
         mod.source = source;
         mod.modifier = modifier;
@@ -66,7 +82,7 @@ public class HasPointsTest : TestBehaviour
 
     public void ItReceives____From__UnlessItHas__(float modifier, string type, string source, string blockedType)
     {
-        ReceivesPointsUnlessItHas mod = it.transform.Require<ReceivesPointsUnlessItHas>();
+        ReceivesPointsUnlessItHas mod = it.gameObject.AddComponent<ReceivesPointsUnlessItHas>();
         mod.type = type;
         mod.source = source;
         mod.modifier = modifier;
