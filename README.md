@@ -54,6 +54,6 @@ Load your game
 Future Refactoring
 ==================
 
-Currently this is one monolithic class with a complicated properties panel.
-It should be broken up into multiple single purpose classes. i.e. ModifiesPoints,
-BlocksPoints, etc.
+Currently the master branch contains one monolithic class with a complicated properties panel.
+
+There is a branch where this class is broken up into HasPoints (just Get and Set), ReceivesPointsFromSource (used to be modifiers) and ReceivesPointsUnless (used to be blocked by), this will be merged after dog fooding.
