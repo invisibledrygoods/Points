@@ -5,48 +5,17 @@ using Require;
 using System.Linq;
 
 [Serializable]
-public class Modifier
-{
-    public string source;
-    public float modifier;
-    public Transform effect;
-
-    public Modifier(string source, float modifier)
-    {
-        this.source = source;
-        this.modifier = modifier;
-    }
-}
-
-[Serializable]
 public class Point
 {
     public string type;
     public float amount;
     public float max;
     public bool savable;
-    public List<Modifier> modifiers;
-    public List<Block> blocks;
 
     public Point(string type, float amount)
     {
         this.type = type;
         this.amount = amount;
-        this.modifiers = new List<Modifier>();
-        this.blocks = new List<Block>();
-    }
-}
-
-[Serializable]
-public class Block
-{
-    public string source;
-    public string to;
-
-    public Block(string source, string to)
-    {
-        this.source = source;
-        this.to = to;
     }
 }
 
@@ -60,7 +29,19 @@ public class HasPoints : SavesData
         {
             if (point.type == type)
             {
-                point.amount = amount;
+                if (amount < 0)
+                {
+                    point.amount = 0;
+                }
+                else if (amount > point.max && point.max != 0)
+                {
+                    point.amount = point.max;
+                }
+                else
+                {
+                    point.amount = amount;
+                }
+
                 return;
             }
         }
@@ -68,42 +49,19 @@ public class HasPoints : SavesData
         points.Add(new Point(type, amount));
     }
 
-    public void SetModifier(string type, string source, float modifier)
+    public bool Deal(string source, float amount)
     {
-        Point point = GetPoint(type);
+        bool successful = false;
 
-        foreach (Modifier mod in GetPoint(type).modifiers)
+        foreach (ReceivesPointsFromSource receiver in transform.GetComponents<ReceivesPointsFromSource>())
         {
-            if (mod.source == source)
+            if (receiver.source == source)
             {
-                mod.modifier = modifier;
-                return;
+                successful = successful || receiver.Deal(amount);
             }
         }
 
-        point.modifiers.Add(new Modifier(source, modifier));
-    }
-
-    public void Deal(string source, float amount)
-    {
-        foreach (Point point in PointsThatCanReceive(source))
-        {
-            foreach (Modifier mod in point.modifiers.Where(i => i.source == source))
-            {
-                float max = point.max;
-                if (max == 0)
-                {
-                    max = float.MaxValue;
-                }
-
-                point.amount = Mathf.Clamp(point.amount + mod.modifier * amount, 0, max);
-
-                if (mod.effect)
-                {
-                    Instantiate(mod.effect, transform.position, Quaternion.identity);
-                }
-            }
-        }
+        return successful;
     }
 
     public bool Has(string type)
@@ -121,29 +79,34 @@ public class HasPoints : SavesData
 
     public bool CanReceive(string source)
     {
-        return PointsThatCanReceive(source).Count() > 0;
+        foreach (ReceivesPointsFromSource receiver in transform.GetComponents<ReceivesPointsFromSource>())
+        {
+            if (receiver.source == source)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public IEnumerable<Point> PointsThatCanReceive(string source)
     {
+        HashSet<string> canReceive = new HashSet<string>();
+
+        foreach (ReceivesPointsFromSource receiver in transform.GetComponents<ReceivesPointsFromSource>())
+        {
+            if (receiver.source == source)
+            {
+                canReceive.Add(receiver.type);
+            }
+        }
+
         foreach (Point point in points)
         {
-            foreach (Modifier mod in point.modifiers.Where(i => i.source == source))
+            if (canReceive.Contains(point.type))
             {
-                bool blocked = false;
-
-                foreach (Block block in points.Where(i => i.amount > 0).SelectMany(i => i.blocks))
-                {
-                    if (block.source == source && block.to == point.type)
-                    {
-                        blocked = true;
-                    }
-                }
-
-                if (!blocked)
-                {
-                    yield return point;
-                }
+                yield return point;
             }
         }
     }
@@ -190,11 +153,6 @@ public class HasPoints : SavesData
     public void SetMax(string type, float amount)
     {
         GetPoint(type).max = amount;
-    }
-
-    public void SetBlock(string type, string source, string toType)
-    {
-        GetPoint(type).blocks.Add(new Block(source, toType));
     }
 
     public void SetSavable(string type, bool savable)

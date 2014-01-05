@@ -61,7 +61,11 @@ public class DealsPointsInCollisionTest : TestBehaviour
 
         HasPoints buttheadPoints = butthead.transform.Require<HasPoints>();
         buttheadPoints.Set("hp", hp);
-        buttheadPoints.SetModifier("hp", "damage", -1);
+
+        ReceivesPointsFromSource modifier = butthead.transform.Require<ReceivesPointsFromSource>();
+        modifier.type = "hp";
+        modifier.source = "damage";
+        modifier.modifier = -1;
     }
 
     public void ItCollidesWithTheButthead()

@@ -37,16 +37,14 @@ public class HasPointsTest : TestBehaviour
 
         Given("it has 5 'hp'")
             .And("it has 2 'shield'")
-            .And("the 'shield' blocks 'damage' to 'hp'")
-            .And("it receives -1 'hp' from 'damage'")
+            .And("it receives -1 'hp' from 'damage' unless it has 'shield'")
             .When("it receives 5 points of 'damage'")
             .Then("it should have 5 'hp'")
             .Because("it should not lose points when another point is blocking them");
 
         Given("it has 5 'hp'")
             .And("it has 0 'shield'")
-            .And("the 'shield' blocks 'damage' to 'hp'")
-            .And("it receives -1 'hp' from 'damage'")
+            .And("it receives -1 'hp' from 'damage' unless it has 'shield'")
             .When("it receives 5 points of 'damage'")
             .Then("it should have 0 'hp'")
             .Because("it should lose points if the shield is depleted");
@@ -60,7 +58,19 @@ public class HasPointsTest : TestBehaviour
 
     public void ItReceives____From__(float modifier, string type, string source)
     {
-        it.SetModifier(type, source, modifier);
+        ReceivesPointsFromSource mod = it.transform.Require<ReceivesPointsFromSource>();
+        mod.type = type;
+        mod.source = source;
+        mod.modifier = modifier;
+    }
+
+    public void ItReceives____From__UnlessItHas__(float modifier, string type, string source, string blockedType)
+    {
+        ReceivesPointsUnlessItHas mod = it.transform.Require<ReceivesPointsUnlessItHas>();
+        mod.type = type;
+        mod.source = source;
+        mod.modifier = modifier;
+        mod.unlessItHasPointsIn = blockedType;
     }
 
     public void ItReceives__PointsOf__(float amount, string type)
@@ -76,10 +86,5 @@ public class HasPointsTest : TestBehaviour
     public void ItHasAMax__Of__(string type, float amount)
     {
         it.SetMax(type, amount);
-    }
-
-    public void The__Blocks__To__(string type, string source, string toType)
-    {
-        it.SetBlock(type, source, toType);
     }
 }
