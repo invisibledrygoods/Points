@@ -49,6 +49,24 @@ public class HasStrings : SavesData
         throw new KeyNotFoundException(name + " does not contain a string named " + entry);
     }
 
+    public StringEntry GetEntry(string name)
+    {
+        foreach (StringEntry currentEntry in strings)
+        {
+            if (currentEntry.name == name)
+            {
+                return currentEntry;
+            }
+        }
+
+        return null;
+    }
+
+    public void SetSavable(string name, bool value)
+    {
+        GetEntry(name).savable = value;
+    }
+
     public bool Has(string entry)
     {
         foreach (StringEntry currentEntry in strings)
@@ -94,13 +112,52 @@ public class HasStrings : SavesData
         });
     }
 
+    public bool GetSavable(string name)
+    {
+        StringEntry entry = GetEntry(name);
+        return entry == null ? false : entry.savable;
+    }
+
+    string Encode(string input)
+    {
+        return input.Replace("&", "&amp;").Replace(":", "&colon;").Replace(",", "&comma;");
+    }
+
+    string Decode(string input)
+    {
+        return input.Replace("&comma;", ",").Replace("&colon;", ":").Replace("&amp;", "&"); 
+    }
+
     public override string Serialize()
     {
-        throw new NotImplementedException();
+        List<string> serialized = new List<string>();
+
+        foreach (StringEntry currentEntry in strings)
+        {
+            if (currentEntry.savable)
+            {
+                serialized.Add(currentEntry.name + ":" + Encode(currentEntry.text));
+            }
+        }
+
+        return string.Join(",", serialized.ToArray());
     }
 
     public override void Deserialize(string serialized)
     {
-        throw new NotImplementedException();
+        if (serialized == "")
+        {
+            return;
+        }
+
+        foreach (string savedValue in serialized.Split(','))
+        {
+            string[] keyValuePair = savedValue.Split(":".ToCharArray());
+
+            if (GetSavable(keyValuePair[0]))
+            {
+                Set(keyValuePair[0], Decode(keyValuePair[1]));
+            }
+        }
     }
 }
