@@ -19,10 +19,8 @@ public class DealsPointsInCollision : MonoBehaviour
     {
         HasPoints points = collider.transform.Require<HasPoints>();
 
-        if (points.CanReceive(source))
+        if (points.Deal(source, amount))
         {
-            points.Deal(source, amount);
-
             if (afterDealing == AfterDealing.Deactivate)
             {
                 gameObject.SetActive(false);
