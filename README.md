@@ -1,14 +1,12 @@
 Points
 ======
 
-Mostly in-house points and flags helper for Video Geimus
+Mostly in-house data helper for Video Geimus
 
-Examples
---------
+Points
+------
 
     HasPoints points = transform.Require<HasPoints>();
-    HasFlags flags = transform.Require<HasFlags>();
-    points.fileSuffix = "MainCharacter";
 
 Get some hitpoints
 
@@ -20,40 +18,68 @@ Set a max
 
 Take some damage
 
-    points.SetModifier("hp", "damage", -1);
+    var mod = AddComponent<ReceivesPointsFromSource>();
+    mod.type = "hp";
+    mod.source = "damage";
+    mod.modifier = -1.0f;
+
     points.Deal("damage", 10);
     
 Check your health
 
     points.Get("hp");
-    
+
 Heal yourself
 
-    points.SetModifier("hp", "healing", 1);
+    var mod = AddComponent<ReceivesPointsFromSource>();
+    mod.type = "hp";
+    mod.source = "healing";
+    mod.modifier = 1.0f;
+    
     points.Deal("healing", 10);
     
 Buy a shield
 
+    var mod = AddComponent<ReceivesPointsUnless>();
+    mod.type = "hp";
+    mod.source = "damage";
+    mod.unlessHasPointsIn = "shield";
+    mod.modifier = -1.0f;
+
     points.Set("shield", 10);
-    points.SetBlock("shield", "damage", "hp");
-
-Save your progress
-
-    points.Save("file1");
     
-Blow in the cartridge
+Flags
+-----
 
-    flags.Lower("CartridgeInserted");
-    flags.Raise("CartridgeClean");
-    flags.Raise("CartridgeInserted");
+    HasFlags flags = transform.Require<HasFlags>();
+   
+Go down koujaku's route a bit
+
+    flags.Raise("Hesitate");
+    flags.Lower("WhyTheUmbrella");
+    flags.Raise("FightBack");
     
-Load your game
+Check if you're on the right track
 
-    points.Load("file1");
+    if (flags.Get("Hesitate") && !flags.Get("WhyTheUmbrella") && flags.Get("FightBack")) {
+      Debug.Log("more like kouJERKu amirite?");
+    }
+    
+Strings
+-------
 
-Future Refactoring
-==================
+    HasStrings strings = transform.Require<HasStrings>();
+    
+Name your character
 
-Currently the master branch contains one monolithic class with a complicated properties panel.
+    strings.Set("name", "Aoba");
+    strings.Set("suffix", "tan");
+    
+Show some dialog
 
-There is a branch where this class is broken up into HasPoints (just Get and Set), ReceivesPointsFromSource (used to be modifiers) and ReceivesPointsUnless (used to be blocked by), this will be merged after dog fooding.
+    strings.Interpolate("Hi, I'm #{name}-#{suffix} and I have #{.hp} hitpoints.");
+    
+Saving and loading
+------------------
+
+I'm too tired to document this right now. Points, flags and strings all have Load and Save methods that write to pseudo-files in PlayerPrefs and behave as you would expect them.
