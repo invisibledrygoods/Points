@@ -40,10 +40,10 @@ Heal yourself
     
 Buy a shield
 
-    var mod = AddComponent<ReceivesPointsUnless>();
+    var mod = AddComponent<ReceivesPointsUnlessItHas>();
     mod.type = "hp";
     mod.source = "damage";
-    mod.unlessHasPointsIn = "shield";
+    mod.unlessItHasPointsIn = "shield";
     mod.modifier = -1.0f;
 
     points.Set("shield", 10);
