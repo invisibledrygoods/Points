@@ -15,9 +15,26 @@ public class DealsPointsInCollision : MonoBehaviour
     public float amount;
     public AfterDealing afterDealing;
 
+    void Awake()
+    {
+        Receives2DCollisionEvents collisions2D = transform.GetComponent<Receives2DCollisionEvents>();
+        if (collisions2D != null)
+        {
+            collisions2D.waitForCollision.Then(_ =>
+                {
+                    DealPoints(_);
+                });
+        }
+    }
+
     void OnTriggerEnter(Collider collider)
     {
-        HasPoints points = collider.transform.Require<HasPoints>();
+        DealPoints(collider.transform);
+    }
+
+    void DealPoints(Transform collidedWith)
+    {
+        HasPoints points = collidedWith.Require<HasPoints>();
 
         if (points.Deal(source, amount))
         {
