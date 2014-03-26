@@ -26,25 +26,25 @@ public class DisplaysPointsAsMarkers : MonoBehaviour
     {
         for (int i = 0; i < (int)(points.Get(type) / pointsPerMarker) && i < markers.Length; i++)
         {
-            if (markers[i].gameObject.active == false)
+            if (markers[i].gameObject.activeSelf == false)
             {
                 if (addEffect != null)
                 {
                     Instantiate(addEffect, markers[i].transform.position, Quaternion.identity);
                 }
-                markers[i].gameObject.SetActiveRecursively(true);
+                markers[i].gameObject.SetActive(true);
             }
         }
 
         for (int i = (int)(points.Get(type) / pointsPerMarker); i < markers.Length; i++)
         {
-            if (markers[i].gameObject.active == true)
+            if (markers[i].gameObject.activeSelf == true)
             {
                 if (loseEffect != null)
                 {
                     Instantiate(loseEffect, markers[i].transform.position, Quaternion.identity);
                 }
-                markers[i].gameObject.SetActiveRecursively(false);
+                markers[i].gameObject.SetActive(false);
             }
         }
 
