@@ -9,7 +9,6 @@ public class BlinksWhenPointsAreNonzero : MonoBehaviour
 
     Transform module;
     HasPoints points;
-    HasVariableTimeScale time;
 
     float timeout;
 
@@ -17,14 +16,13 @@ public class BlinksWhenPointsAreNonzero : MonoBehaviour
     {
         module = transform.GetModuleRoot();
         points = module.Require<HasPoints>();
-        time = module.Require<HasVariableTimeScale>();
     }
 
     void Update()
     {
         if (points.Get(point) > 0.0f)
         {
-            timeout -= time.DeltaTime("Gui");
+            timeout -= Time.deltaTime;
             renderer.enabled = timeout < 0.5f / blinksPerSecond;
 
             if (timeout < 0.0f)
