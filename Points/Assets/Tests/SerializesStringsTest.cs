@@ -70,7 +70,6 @@ public class SerializesStringsTest : TestBehaviour
 
     public void ItIsDeserialized()
     {
-        Debug.Log(serialized);
         it.Deserialize(serialized);
     }
 
