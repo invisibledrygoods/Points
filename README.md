@@ -1,7 +1,7 @@
 Points
 ======
 
-Mostly in-house data helper for Video Geimus
+Mostly in-house data helper for Video Geimus. It's useful for data-binding.
 
 Points
 ------
