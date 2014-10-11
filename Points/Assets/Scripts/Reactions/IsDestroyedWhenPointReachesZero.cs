@@ -4,7 +4,6 @@ using Require;
 public class IsDestroyedWhenPointReachesZero : MonoBehaviour
 {
     public string type;
-    public Transform spawnAfterDestroying;
 
     Transform module;
     ReceivesPointEvents pointEvents;
@@ -25,11 +24,6 @@ public class IsDestroyedWhenPointReachesZero : MonoBehaviour
             {
                 Destroy(module.gameObject);
             });
-
-            if (spawnAfterDestroying != null)
-            {
-                Instantiate(spawnAfterDestroying, transform.position, Quaternion.identity);
-            }
         });
     }
 
