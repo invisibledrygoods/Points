@@ -6,10 +6,11 @@ public class ReceivesPointEvents : MonoBehaviour
 {
     public class PointEventListener
     {
-        public WaitFor toFall = new WaitFor();
-        public WaitFor toRise = new WaitFor();
-        public WaitFor toReachMax = new WaitFor();
+        public WaitFor<float> toFall = new WaitFor<float>();
+        public WaitFor<float> toRise = new WaitFor<float>();
+        public WaitFor<float> toReachMax = new WaitFor<float>();
         public WaitFor toReachZero = new WaitFor();
+        public WaitFor<float> toChange = new WaitFor<float>();
 
         Dictionary<float, WaitFor> fallingTriggers = new Dictionary<float, WaitFor>();
         Dictionary<float, WaitFor> risingTriggers = new Dictionary<float, WaitFor>();
@@ -36,14 +37,19 @@ public class ReceivesPointEvents : MonoBehaviour
 
         public void Compare(float previous, float current, float max)
         {
+            if (previous != current)
+            {
+                toChange.Happened(current);
+            }
+
             if (previous < current)
             {
-                toRise.Happened();
+                toRise.Happened(current);
             }
 
             if (previous > current)
             {
-                toFall.Happened();
+                toFall.Happened(current);
             }
 
             if (current == 0.0f)
@@ -53,7 +59,7 @@ public class ReceivesPointEvents : MonoBehaviour
 
             if (current == max)
             {
-                toReachMax.Happened();
+                toReachMax.Happened(current);
             }
 
             foreach (KeyValuePair<float, WaitFor> risingTrigger in risingTriggers)

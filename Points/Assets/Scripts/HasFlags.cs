@@ -4,22 +4,22 @@ using System.Linq;
 using System;
 using Require;
 
-[Serializable]
-public class Flag
-{
-    public string name;
-    public bool raised;
-    public bool savable;
-
-    public Flag(string name, bool raised)
-    {
-        this.name = name;
-        this.raised = raised;
-    }
-}
-
 public class HasFlags : SavesData
 {
+    [Serializable]
+    public class Flag
+    {
+        public string name;
+        public bool raised;
+        public bool savable;
+
+        public Flag(string name, bool raised)
+        {
+            this.name = name;
+            this.raised = raised;
+        }
+    }
+
     public List<Flag> flags = new List<Flag>();
 
     public void Lower(string flag)
@@ -61,6 +61,19 @@ public class HasFlags : SavesData
         }
 
         throw new KeyNotFoundException(name + " does not contain a flag named " + flag);
+    }
+
+    public bool GetOrFalse(string flag)
+    {
+        foreach (Flag currentFlag in flags)
+        {
+            if (currentFlag.name == flag)
+            {
+                return currentFlag.raised;
+            }
+        }
+
+        return false;
     }
 
     public void SetSavable(string flag, bool savable)

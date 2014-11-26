@@ -17,6 +17,8 @@ public abstract class SavesData : MonoBehaviour
             throw new Exception("cannot save without a filename");
         }
 
+        Debug.Log("saving " + Serialize() + " as " + filename + "." + fileSuffix);
+
         PlayerPrefs.SetString(filename + "." + fileSuffix, Serialize());
     }
 
@@ -32,6 +34,8 @@ public abstract class SavesData : MonoBehaviour
         {
             throw new Exception("cannot load without a filename");
         }
+
+        Debug.Log("loading " + PlayerPrefs.GetString(filename + "." + fileSuffix) + " from " + filename + "." + fileSuffix);
 
         Deserialize(PlayerPrefs.GetString(filename + "." + fileSuffix));
     }

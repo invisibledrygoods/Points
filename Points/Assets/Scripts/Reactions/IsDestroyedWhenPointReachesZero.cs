@@ -22,7 +22,7 @@ public class IsDestroyedWhenPointReachesZero : MonoBehaviour
         {
             waitForLateUpdate.Then(() =>
             {
-                Destroy(module.gameObject);
+                module.Require<IsDestroyable>().Destroy();
             });
         });
     }
